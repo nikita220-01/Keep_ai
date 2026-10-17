@@ -1,0 +1,30 @@
+{
+  "name": "keep_ai",
+  "version": "1.0.0",
+  "description": "Keep AI — текстовый ИИ-ассистент: Supabase-схема + веб-интерфейс",
+  "scripts": {
+    "dev": "serve ui -l 3000",
+    "ui": "serve ui -l 3000",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:reset": "supabase db reset",
+    "supabase:status": "supabase status",
+    "supabase:link": "supabase link --project-ref smarefamwactsczeiysh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikita220-01/Keep_ai.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/nikita220-01/Keep_ai/issues"
+  },
+  "homepage": "https://github.com/nikita220-01/Keep_ai#readme",
+  "devDependencies": {
+    "serve": "^14.2.6",
+    "supabase": "^2.121.0"
+  }
+}

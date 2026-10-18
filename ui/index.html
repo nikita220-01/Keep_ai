@@ -235,16 +235,37 @@ function appendMessage(text, role, withTime) {
 }
 
 /* ---------- AI (заглушка; интеграция — позже) ---------- */
+/* ---------- AI: локальный сервер модели (scripts/chat_server.py) ---------- */
+const AI_BASES = ['', 'http://127.0.0.1:8000']; // сначала same-origin, затем прямой адрес
+
 async function askAI(prompt) {
-  // TODO: подключить AI Gateway / Supabase Edge Function
-  //   REST API       : https://smarefamwactsczeiysh.supabase.co/rest/v1/
-  //   sb_publishable : sb_publishable__K5BIWM-YTmJWJLzj_LluA_0HLJxngh
-  //   AI Gateway     : project 9b29c2aa-734f-467d-8cf5-6286a4938308
-  //   API key        : cc486128-0246-4115-a029-84d09adc92d9
-  //   Таблицы        : versions → conversations → messages
-  await new Promise((r) => setTimeout(r, 1200));
-  return 'Привет! Я только учусь, но я отвечу на твой вопрос. ' +
-         'Вскоре здесь будет полноценная модель ИИ.';
+  let data = null, lastErr = null;
+  for (const base of AI_BASES) {
+    try {
+      const res = await fetch(base + '/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: prompt })
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      data = await res.json();
+      break;
+    } catch (err) {
+      lastErr = err; // попробуем следующий адрес
+    }
+  }
+  if (!data) {
+    console.error('AI server unreachable:', lastErr);
+    return 'Сервер модели не запущен. Запустите: py -3 scripts/chat_server.py ' +
+           'и откройте http://127.0.0.1:8000';
+  }
+  // память диалога: сохраняем обмен в localStorage
+  try {
+    const hist = JSON.parse(localStorage.getItem('keepai_history') || '[]');
+    hist.push({ user: prompt, assistant: data.reply, ts: Date.now() });
+    localStorage.setItem('keepai_history', JSON.stringify(hist.slice(-100)));
+  } catch (e) { /* приватный режим — просто игнорируем */ }
+  return data.reply;
 }
 
 function showResponse(text) {

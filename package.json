@@ -5,6 +5,12 @@
   "scripts": {
     "dev": "serve ui -l 3000",
     "ui": "serve ui -l 3000",
+    "ai": "py -3 scripts/chat_server.py",
+    "train": "py -3 scripts/train.py",
+    "train:bpe": "py -3 scripts/train_bpe.py",
+    "kb:build": "py -3 scripts/build_knowledge_base.py",
+    "kb:chat": "py -3 scripts/chat_orchestrator.py",
+    "mentor": "py -3 scripts/mentor_chat.py",
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
     "supabase:reset": "supabase db reset",
